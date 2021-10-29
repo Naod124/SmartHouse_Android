@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-
                     sendMessage(lamptxt.getText().toString());
 
                     lightON.setImageResource(R.drawable.lighton);
