@@ -2,10 +2,13 @@ package com.example.smarthouse_android;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -16,16 +19,19 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity  {
 
 
 
     public static final int SERVERPORT = 2400;
     public static final String SERVER_IP = "194.47.40.186";
+   //public boolean valid = false;
+   public String valid = "1234";
 
-    public Switch lampSwitch;
-    public TextView lamptxt;
-    public ImageView lightON;
+    public Button btn;
+    public EditText text;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,44 +40,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        lampSwitch = (Switch) findViewById(R.id.lampSwitch);
-        lightON = (ImageView) findViewById(R.id.lightON);
-        lamptxt = (TextView) findViewById(R.id.lamptxt);
+        btn = (Button) findViewById(R.id.button);
+        text = (EditText) findViewById(R.id.pin);
 
 
 
 
-        lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (lampSwitch.isChecked()) {
-                    lamptxt.setText("LIGHT");
+       btn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
 
+               String pass = text.getText().toString();
+               if (pass.isEmpty()){
+                   text.setError("Filed is empty");
+               }
+               else if (valid.equalsIgnoreCase("1234")) {
+                   //sendMessage(pass);
+                   startActivity(new Intent(MainActivity.this, Devices.class));
+               }
 
+              /* if (valid==true){
+                   startActivity(new Intent(MainActivity.this, Devices.class));
 
-                    sendMessage(lamptxt.getText().toString());
+               }
 
-                    lightON.setImageResource(R.drawable.lighton);
-                } else {
-                    lamptxt.setText("DARK");
+               */
+           }
+       });
 
-                    sendMessage(lamptxt.getText().toString());
-                    lightON.setImageResource(R.drawable.lightoff);
-                }
-            }
-        });
 
     }
 
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.lampSwitch:
-                sendMessage(lampSwitch.getText().toString());
-        }
-    }
 
 
     private void sendMessage(String toString) {
@@ -92,6 +91,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
                     final String st = input.readLine();
                     System.out.println("From server" + st);
+
+                    /*if(st.equalsIgnoreCase("1234")){
+                        valid = true;
+                    }
+                    
+                     */
 
 
 
