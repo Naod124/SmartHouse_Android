@@ -8,15 +8,6 @@
     tools:context=".Devices">
 
     <ImageView
-        android:id="@+id/doorclosed1"
-        android:layout_width="82dp"
-        android:layout_height="77dp"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dooropen1"
-        app:srcCompat="@drawable/doorclosed" />
-
-    <ImageView
         android:id="@+id/dooropen1"
         android:layout_width="82dp"
         android:layout_height="77dp"
@@ -24,7 +15,7 @@
         android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/opendoor" />
+        app:srcCompat="@drawable/doorclosed" />
 
     <TextView
         android:id="@+id/textView"
@@ -81,7 +72,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="ON"
+        android:text="DARK"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.199"
@@ -94,16 +85,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
-        android:text="OPEN"
+        android:text="CLOSED"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/doorText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="11dp"
-        android:text="OPEN"
+        android:text="CLOSED"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView5"
         app:layout_constraintStart_toEndOf="@+id/textView5" />
 
@@ -150,16 +142,6 @@
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/lampon" />
-
-    <ImageView
-        android:id="@+id/lampoff1"
-        android:layout_width="81dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="92dp"
-        app:layout_constraintBottom_toTopOf="@+id/windowText1"
-        app:layout_constraintStart_toEndOf="@+id/lampon1"
         app:srcCompat="@drawable/lampoff" />
 
     <ImageView
@@ -170,14 +152,6 @@
         android:layout_marginBottom="76dp"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/openwindow" />
-
-    <ImageView
-        android:id="@+id/windowclosed1"
-        android:layout_width="82dp"
-        android:layout_height="77dp"
-        android:layout_marginBottom="128dp"
-        app:layout_constraintBottom_toTopOf="@+id/doorclosed1"
-        app:layout_constraintStart_toEndOf="@+id/windowopen1"
         app:srcCompat="@drawable/closedwindow" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,13 @@
 package com.example.smarthouse_android;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -35,31 +38,93 @@ public class Devices extends AppCompatActivity {
         door = (TextView) findViewById(R.id.doorText1);
         window = (TextView) findViewById(R.id.windowText1);
         lampOn = (ImageView) findViewById(R.id.lampon1);
-        lampOff = (ImageView) findViewById(R.id.lampoff1);
+       // lampOff = (ImageView) findViewById(R.id.lampoff1);
         doorOpen = (ImageView) findViewById(R.id.dooropen1);
-        doorClosed = (ImageView) findViewById(R.id.doorclosed1);
+      //  doorClosed = (ImageView) findViewById(R.id.doorclosed1);
         windowOpen = (ImageView) findViewById(R.id.windowopen1);
-        windowClosed = (ImageView) findViewById(R.id.windowclosed1);
-        Switch lampSwitch = findViewById(R.id.lampSwitch1);
-        Switch doorSwitch = findViewById(R.id.doorSwitch1);
-        Switch windowSwitch = findViewById(R.id.windowSwitch1);
-        lampOff.setVisibility(View.INVISIBLE);
-        lampOn.setVisibility(View.VISIBLE);
-        windowClosed.setVisibility(View.INVISIBLE);
-        windowOpen.setVisibility(View.VISIBLE);
-        doorClosed.setVisibility(View.INVISIBLE);
-        doorOpen.setVisibility(View.VISIBLE);
+       // windowClosed = (ImageView) findViewById(R.id.windowclosed1);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lampSwitch1);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch1);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch1);
+
+
+
+        lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (lampSwitch.isChecked()) {
+                    lamp.setText("LIGHT");
 
 
 
 
+                    sendMessage( lamp.getText().toString());
+
+                    // client should not be able to acces the database and update it for now. Server should handle it
+                    // db.UpdateLampElement(lamptxt.getText().toString());
+
+                    lampOn.setImageResource(R.drawable.lighton);
+                } else {
+                    lamp.setText("DARK");
+
+                    sendMessage(lamp.getText().toString());
+                    // db.UpdateLampElement(lamptxt.getText().toString());
+                    lampOn.setImageResource(R.drawable.lightoff);
+                }
+
+            }
+        });
+
+        doorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (doorSwitch.isChecked()) {
+                    door.setText("OPEN");
+                    sendMessage(door.getText().toString());
+                    doorOpen.setImageResource(R.drawable.opendoor);
+
+                }else {
+                    door.setText("CLOSED");
+                    sendMessage(door.getText().toString());
+                    doorOpen.setImageResource(R.drawable.doorclosed);
+
+                }
+
+            }
+        });
+
+        windowSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (windowSwitch.isChecked()){
+                    window.setText("OPEN");
+                    sendMessage("open");
+                    windowOpen.setImageResource(R.drawable.openwindow);
+                }
+
+                else{
+                    window.setText("CLOSED");
+                    sendMessage("shut");
+                    windowOpen.setImageResource(R.drawable.closedwindow);
+
+                }
+            }
+        });
+
+/*
         lampSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (lamp.getText().equals("ON")){
                     sendMessage("DARK", "lamp");
+                    lampOn.setImageResource(R.drawable.lightoff);
+
                 }else{
-                    sendMessage("LIGHT", "lamp");
+                    lamp.setText("OFF");
+                    if (lamp.getText().equals("OFF")) {
+                        sendMessage("LIGHT", "lamp");
+                        lampOn.setImageResource(R.drawable.lighton);
+                    }
                 }
             }
         });
@@ -70,8 +135,13 @@ public class Devices extends AppCompatActivity {
             public void onClick(View v) {
                 if (door.getText().equals("OPEN")){
                     sendMessage("CLOSED", "door");
+                    doorOpen.setImageResource(R.drawable.doorclosed);
                 }else{
-                    sendMessage("OPEN", "door");
+                    door.setText("CLOSED");
+                    if (door.getText().equals("CLOSED")) {
+                        sendMessage("OPEN", "door");
+                        doorOpen.setImageResource(R.drawable.opendoor);
+                    }
                 }
             }
         });
@@ -80,17 +150,25 @@ public class Devices extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (window.getText().equals("OPEN")){
-                    sendMessage("shut", "window");
+                    sendMessage("shut");
+                    windowOpen.setImageResource(R.drawable.closedwindow);
+
                 }else{
-                    sendMessage("open", "window");
+                    window.setText("CLOSED");
+                    if (window.getText().equals("CLOSED")) {
+                        sendMessage("open");
+                        windowOpen.setImageResource(R.drawable.openwindow);
+                    }
                 }
             }
         });
+
+ */
     }
 
 
 
-    void sendMessage(final String input, String choice){
+    void sendMessage(final String input){
 
         new Thread(new Runnable() {
             @Override
@@ -101,20 +179,12 @@ public class Devices extends AppCompatActivity {
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out.println(input);
                     final String answer = in.readLine();
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                   /* new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
 
                             if (choice.equalsIgnoreCase("lamp")){
                                 lamp.setText(answer);
-                                if (answer.equalsIgnoreCase("ON")){
-                                    lampOff.setVisibility(View.INVISIBLE);
-                                    lampOn.setVisibility(View.VISIBLE);
-                                }
-                                else {
-                                    lampOn.setVisibility(View.INVISIBLE);
-                                    lampOff.setVisibility(View.VISIBLE);
-                                }
                             }else if (choice.equalsIgnoreCase("door")){
                                 door.setText(answer);
 
@@ -137,7 +207,7 @@ public class Devices extends AppCompatActivity {
                                     windowOpen.setVisibility(View.INVISIBLE);
                                     windowClosed.setVisibility(View.VISIBLE);
                                 }
-                            } }});
+                            } }});   */
 
                     if(bufferedReader != null)
                         bufferedReader.close();
