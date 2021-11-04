@@ -1,7 +1,6 @@
 package com.example.smarthouse_android;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,21 +54,19 @@ public class MainActivity extends AppCompatActivity  {
                if (pass.isEmpty()){
                    text.setError("Filed is empty");
                }
-               else if (valid.equalsIgnoreCase("1234")) {
+               else {
                    //sendMessage(pass);
-                   startActivity(new Intent(MainActivity.this, Devices.class));
+                   loginUser(pass);
                }
 
-              /* if (valid==true){
-                   startActivity(new Intent(MainActivity.this, Devices.class));
-
-               }
-
-               */
            }
        });
 
 
+    }
+
+    public void loginUser(String pinCode){
+        sendMessage(pinCode);
     }
 
 
@@ -89,15 +87,14 @@ public class MainActivity extends AppCompatActivity  {
 
 
                     BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                    final String st = input.readLine();
-                    System.out.println("From server" + st);
-
-                    /*if(st.equalsIgnoreCase("1234")){
-                        valid = true;
+                    final String pass = input.readLine();
+                  
+                    if(pass.equalsIgnoreCase("Correct")){
+                        startActivity(new Intent(MainActivity.this, Devices.class));
                     }
-                    
-                     */
-
+                    else {
+                        text.setError("Wrong pin code");
+                    }
 
 
                     output.close();
