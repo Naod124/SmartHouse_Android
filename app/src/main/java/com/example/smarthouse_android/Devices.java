@@ -29,23 +29,27 @@ public class Devices extends AppCompatActivity {
     ImageView doorClosed;
     ImageView windowOpen;
     ImageView windowClosed;
+    TextView humidity;
+    TextView temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
-        lamp = (TextView) findViewById(R.id.lampText1);
-        door = (TextView) findViewById(R.id.doorText1);
-        window = (TextView) findViewById(R.id.windowText1);
-        lampOn = (ImageView) findViewById(R.id.lampon1);
-       // lampOff = (ImageView) findViewById(R.id.lampoff1);
-        doorOpen = (ImageView) findViewById(R.id.dooropen1);
-      //  doorClosed = (ImageView) findViewById(R.id.doorclosed1);
-        windowOpen = (ImageView) findViewById(R.id.windowopen1);
-       // windowClosed = (ImageView) findViewById(R.id.windowclosed1);
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lampSwitch1);
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch1);
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch1);
+        lamp = (TextView) findViewById(R.id.lampOnOff);
+        door = (TextView) findViewById(R.id.doorOnOFF);
+        humidity = (TextView) findViewById(R.id.humidityText);
+        temp = (TextView) findViewById(R.id.tempText);
+        window = (TextView) findViewById(R.id.windowOnOfff);
+       // lampOn = (ImageView) findViewById(R.id.lam);
+        lampOff = (ImageView) findViewById(R.id.lampOff);
+        //doorOpen = (ImageView) findViewById(R.id.dooropen1);
+        doorClosed = (ImageView) findViewById(R.id.doorClosed);
+        //windowOpen = (ImageView) findViewById(R.id.windowopen1);
+        windowClosed = (ImageView) findViewById(R.id.windowClosed);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch);
 
 
 
