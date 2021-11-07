@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     public static final int SERVERPORT = 2400;
-    public static final String SERVER_IP = "194.47.40.186";
+    public static final String SERVER_IP = "192.168.0.37";
    //public boolean valid = false;
    public String valid = "1234";
 
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     private void sendMessage(String toString) {
+        text = (EditText) findViewById(R.id.pin);
 
         final Handler handler = new Handler();
         Thread thread = new Thread(new Runnable() {

@@ -67,13 +67,13 @@ public class Devices extends AppCompatActivity {
                     // client should not be able to acces the database and update it for now. Server should handle it
                     // db.UpdateLampElement(lamptxt.getText().toString());
 
-                    lampOn.setImageResource(R.drawable.lighton);
+                    lampOff.setImageResource(R.drawable.lighton);
                 } else {
                     lamp.setText("DARK");
 
                     sendMessage(lamp.getText().toString());
                     // db.UpdateLampElement(lamptxt.getText().toString());
-                    lampOn.setImageResource(R.drawable.lightoff);
+                    lampOff.setImageResource(R.drawable.lightoff);
                 }
 
             }
@@ -85,12 +85,12 @@ public class Devices extends AppCompatActivity {
                 if (doorSwitch.isChecked()) {
                     door.setText("OPEN");
                     sendMessage(door.getText().toString());
-                    doorOpen.setImageResource(R.drawable.opendoor);
+                    doorClosed.setImageResource(R.drawable.opendoor);
 
                 }else {
                     door.setText("CLOSED");
                     sendMessage(door.getText().toString());
-                    doorOpen.setImageResource(R.drawable.doorclosed);
+                    doorClosed.setImageResource(R.drawable.doorclosed);
 
                 }
 
@@ -103,13 +103,13 @@ public class Devices extends AppCompatActivity {
                 if (windowSwitch.isChecked()){
                     window.setText("OPEN");
                     sendMessage("open");
-                    windowOpen.setImageResource(R.drawable.openwindow);
+                    windowClosed.setImageResource(R.drawable.openwindow);
                 }
 
                 else{
                     window.setText("CLOSED");
                     sendMessage("shut");
-                    windowOpen.setImageResource(R.drawable.closedwindow);
+                    windowClosed.setImageResource(R.drawable.closedwindow);
 
                 }
             }
@@ -178,40 +178,11 @@ public class Devices extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket("192.168.0.41", 9999);
+                    Socket socket = new Socket("192.168.0.37", 2400);
                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out.println(input);
                     final String answer = in.readLine();
-                   /* new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            if (choice.equalsIgnoreCase("lamp")){
-                                lamp.setText(answer);
-                            }else if (choice.equalsIgnoreCase("door")){
-                                door.setText(answer);
-
-                                if (answer.equalsIgnoreCase("OPEN")){
-                                    doorClosed.setVisibility(View.INVISIBLE);
-                                    doorOpen.setVisibility(View.VISIBLE);
-                                }
-                                else {
-                                    doorOpen.setVisibility(View.INVISIBLE);
-                                    doorClosed.setVisibility(View.VISIBLE);
-                                }
-                            }else if (choice.equalsIgnoreCase("window") ){
-                                window.setText(answer);
-
-                                if (answer.equalsIgnoreCase("OPEN")){
-                                    windowClosed.setVisibility(View.INVISIBLE);
-                                    windowOpen.setVisibility(View.VISIBLE);
-                                }
-                                else {
-                                    windowOpen.setVisibility(View.INVISIBLE);
-                                    windowClosed.setVisibility(View.VISIBLE);
-                                }
-                            } }});   */
 
                     if(bufferedReader != null)
                         bufferedReader.close();
