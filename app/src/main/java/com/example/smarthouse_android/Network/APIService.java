@@ -13,7 +13,7 @@ public interface APIService {
     @POST("")
     Call<String> checkLogin();
 
-    @PUT("devices/device/{key}/{updateValue}")
+    @PUT("Rest_smarthouse_war_exploded/api/devices/device/{key}/{updateValue}")
     Call<DeviceModel> update(@Path("key") String key, @Path("updateValue") String value);
 
     @GET("Rest_smarthouse_war_exploded/api/devices")

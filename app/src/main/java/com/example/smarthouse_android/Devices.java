@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Devices extends AppCompatActivity {
@@ -69,24 +70,54 @@ public class Devices extends AppCompatActivity {
         //windowOpen = (ImageView) findViewById(R.id.windowopen1);
         ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
 
-        Button button = findViewById(R.id.button2);
 
         getDeviceStatus();
 
 
 
-        APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+      /*  APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
         Call<DeviceModel> call= api.getDevices();
-
+*/
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (lampSwitch.isChecked()) {
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("LightSwitch","LIGHT");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************LightSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
+
+
                     lamp.setText("LIGHT");
                     sendMessage( lamp.getText().toString());
                     lampOff.setImageResource(R.drawable.lighton);
                 } else {
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("LightSwitch","DARK");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************LightSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
+
                     lamp.setText("DARK");
                     sendMessage(lamp.getText().toString());
                     lampOff.setImageResource(R.drawable.lightoff);
@@ -98,10 +129,38 @@ public class Devices extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (doorSwitch.isChecked()) {
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("DoorSwitch","OPEN");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************DoorSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
                     door.setText("OPEN");
                     sendMessage(door.getText().toString());
                     doorClosed.setImageResource(R.drawable.opendoor);
                 }else {
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("DoorSwitch","CLOSED");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************DoorSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
                     door.setText("CLOSED");
                     sendMessage(door.getText().toString());
                     doorClosed.setImageResource(R.drawable.doorclosed);
@@ -113,11 +172,39 @@ public class Devices extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (windowSwitch.isChecked()){
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("WindowSwitch","open");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************WindowSwitch " + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
                     window.setText("OPEN");
                     sendMessage("open");
                     windowClosed.setImageResource(R.drawable.openwindow);
                 }
                 else{
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("WindowSwitch","shut");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************WindowSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
                     window.setText("CLOSED");
                     sendMessage("shut");
                     windowClosed.setImageResource(R.drawable.closedwindow);
