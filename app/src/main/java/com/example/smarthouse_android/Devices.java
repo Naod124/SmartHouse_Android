@@ -4,23 +4,30 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.example.smarthouse_android.Model.DeviceModel;
+import com.example.smarthouse_android.Network.APIService;
+import com.example.smarthouse_android.Network.RetrofitInstance;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class Devices extends AppCompatActivity {
 
     BufferedReader bufferedReader;
     PrintWriter printWriter;
-    TextView lamp;
+   /* TextView lamp;
     TextView door;
     TextView window;
     ImageView lampOn;
@@ -31,26 +38,45 @@ public class Devices extends AppCompatActivity {
     ImageView windowClosed;
     TextView humidity;
     TextView temp;
+    */
 
+
+
+ static int temperature;
+ static int humStatus;
+
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
-        lamp = (TextView) findViewById(R.id.lampOnOff);
-        door = (TextView) findViewById(R.id.doorOnOFF);
-        humidity = (TextView) findViewById(R.id.humidityText);
-        temp = (TextView) findViewById(R.id.tempText);
-        window = (TextView) findViewById(R.id.windowOnOfff);
-       // lampOn = (ImageView) findViewById(R.id.lam);
-        lampOff = (ImageView) findViewById(R.id.lampOff);
-        //doorOpen = (ImageView) findViewById(R.id.dooropen1);
-        doorClosed = (ImageView) findViewById(R.id.doorClosed);
-        //windowOpen = (ImageView) findViewById(R.id.windowopen1);
-        windowClosed = (ImageView) findViewById(R.id.windowClosed);
+
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch);
 
+
+        TextView lamp = (TextView) findViewById(R.id.lampOnOff);
+        TextView door = (TextView) findViewById(R.id.doorOnOFF);
+        TextView humidity = (TextView) findViewById(R.id.humidityText);
+        TextView  temp = (TextView) findViewById(R.id.tempText);
+        TextView window = (TextView) findViewById(R.id.windowOnOfff);
+        // lampOn = (ImageView) findViewById(R.id.lam);
+        ImageView lampOff = (ImageView) findViewById(R.id.lampOff);
+        //doorOpen = (ImageView) findViewById(R.id.dooropen1);
+        ImageView  doorClosed = (ImageView) findViewById(R.id.doorClosed);
+        //windowOpen = (ImageView) findViewById(R.id.windowopen1);
+        ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
+
+        Button button = findViewById(R.id.button2);
+
+        getDeviceStatus();
+
+
+
+        APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+        Call<DeviceModel> call= api.getDevices();
 
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -58,24 +84,13 @@ public class Devices extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (lampSwitch.isChecked()) {
                     lamp.setText("LIGHT");
-
-
-
-
                     sendMessage( lamp.getText().toString());
-
-                    // client should not be able to acces the database and update it for now. Server should handle it
-                    // db.UpdateLampElement(lamptxt.getText().toString());
-
                     lampOff.setImageResource(R.drawable.lighton);
                 } else {
                     lamp.setText("DARK");
-
                     sendMessage(lamp.getText().toString());
-                    // db.UpdateLampElement(lamptxt.getText().toString());
                     lampOff.setImageResource(R.drawable.lightoff);
                 }
-
             }
         });
 
@@ -86,14 +101,11 @@ public class Devices extends AppCompatActivity {
                     door.setText("OPEN");
                     sendMessage(door.getText().toString());
                     doorClosed.setImageResource(R.drawable.opendoor);
-
                 }else {
                     door.setText("CLOSED");
                     sendMessage(door.getText().toString());
                     doorClosed.setImageResource(R.drawable.doorclosed);
-
                 }
-
             }
         });
 
@@ -105,7 +117,6 @@ public class Devices extends AppCompatActivity {
                     sendMessage("open");
                     windowClosed.setImageResource(R.drawable.openwindow);
                 }
-
                 else{
                     window.setText("CLOSED");
                     sendMessage("shut");
@@ -115,59 +126,37 @@ public class Devices extends AppCompatActivity {
             }
         });
 
-/*
-        lampSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lamp.getText().equals("ON")){
-                    sendMessage("DARK", "lamp");
-                    lampOn.setImageResource(R.drawable.lightoff);
 
-                }else{
-                    lamp.setText("OFF");
-                    if (lamp.getText().equals("OFF")) {
-                        sendMessage("LIGHT", "lamp");
-                        lampOn.setImageResource(R.drawable.lighton);
-                    }
+    }
+
+
+
+    public void getDeviceStatus(){
+        APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+        Call<DeviceModel> call = api.getDevices();
+        TextView humidity = (TextView) findViewById(R.id.humidityText);
+        TextView  temp = (TextView) findViewById(R.id.tempText);
+        new Thread(new Runnable() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void run() {
+                Response response = null;
+                try {
+                    response = call.execute();
+
+                if (response.isSuccessful()) {
+                    DeviceModel deviceModel = (DeviceModel) response.body();
+                // temperature = deviceModel.getTemperature();
+                  //  humStatus = deviceModel.getHumidity();
+                    temp.setText(String.valueOf(deviceModel.getTemperature()) +  "°C");
+                    humidity.setText(String.valueOf(deviceModel.getHumidity())+ "%");
+
+                }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        });
-
-
-        doorSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (door.getText().equals("OPEN")){
-                    sendMessage("CLOSED", "door");
-                    doorOpen.setImageResource(R.drawable.doorclosed);
-                }else{
-                    door.setText("CLOSED");
-                    if (door.getText().equals("CLOSED")) {
-                        sendMessage("OPEN", "door");
-                        doorOpen.setImageResource(R.drawable.opendoor);
-                    }
-                }
-            }
-        });
-
-        windowSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (window.getText().equals("OPEN")){
-                    sendMessage("shut");
-                    windowOpen.setImageResource(R.drawable.closedwindow);
-
-                }else{
-                    window.setText("CLOSED");
-                    if (window.getText().equals("CLOSED")) {
-                        sendMessage("open");
-                        windowOpen.setImageResource(R.drawable.openwindow);
-                    }
-                }
-            }
-        });
-
- */
+        }).start();
     }
 
 
@@ -178,7 +167,7 @@ public class Devices extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket("192.168.0.37", 2400);
+                    Socket socket = new Socket("194.47.46.148", 2400);
                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out.println(input);
@@ -195,5 +184,6 @@ public class Devices extends AppCompatActivity {
             }
         }).start();
     }
+
 
 }

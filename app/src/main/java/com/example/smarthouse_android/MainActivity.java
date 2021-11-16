@@ -8,10 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +20,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     public static final int SERVERPORT = 2400;
-    public static final String SERVER_IP = "192.168.0.37";
+    public static final String SERVER_IP = "194.47.46.148";
    //public boolean valid = false;
    public String valid = "1234";
 
@@ -50,14 +46,15 @@ public class MainActivity extends AppCompatActivity  {
            @Override
            public void onClick(View v) {
 
-               String pass = text.getText().toString();
+               /*String pass = text.getText().toString();
                if (pass.isEmpty()){
                    text.setError("Filed is empty");
                }
                else {
                    //sendMessage(pass);
                    loginUser(pass);
-               }
+               }*/
+               startActivity(new Intent(MainActivity.this, Devices.class));
 
            }
        });
@@ -81,11 +78,8 @@ public class MainActivity extends AppCompatActivity  {
                 try {
                     final Socket s = new Socket(SERVER_IP, SERVERPORT);
 
-
-
                     PrintWriter output = new PrintWriter(s.getOutputStream(),true);
                     output.println(toString);
-
 
                     BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
                     final String pass = input.readLine();
@@ -96,17 +90,12 @@ public class MainActivity extends AppCompatActivity  {
                     else {
                         text.setError("Wrong pin code");
                     }
-
-
                     output.close();
-
                     s.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
-
         });
         thread.start();
     }
