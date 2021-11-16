@@ -252,8 +252,8 @@
 
     <ImageButton
         android:id="@+id/speech"
-        android:layout_width="134dp"
-        android:layout_height="146dp"
+        android:layout_width="143dp"
+        android:layout_height="181dp"
         android:layout_marginStart="136dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
