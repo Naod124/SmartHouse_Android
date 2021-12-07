@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -67,6 +68,15 @@ public class Devices extends AppCompatActivity {
             }
         });
         getDeviceStatus();
+        final Handler handler = new Handler();
+        final int delay = 1000; // 1000 milliseconds == 1 second
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+              getDeviceStatus();
+              handler.postDelayed(this, delay);
+            }
+        }, delay);
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -250,7 +260,7 @@ public class Devices extends AppCompatActivity {
             else if(spokenText.equalsIgnoreCase("Window close")) {
                 windowSwitch.setChecked(false);
             }else{
-                Toast.makeText(Devices.this,"The say the correct commands",Toast.LENGTH_LONG).show();
+                Toast.makeText(Devices.this,"Pronounce the correct commands",Toast.LENGTH_LONG).show();
             }
 
         }
