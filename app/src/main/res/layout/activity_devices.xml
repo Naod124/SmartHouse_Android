@@ -120,7 +120,7 @@
         android:layout_width="413dp"
         android:layout_height="64dp"
         android:background="#03A9F4"
-        android:text="Smart House"
+        android:text="Devices"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
@@ -181,20 +181,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.401" />
-
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="67dp"
-        android:layout_height="57dp"
-        android:contentDescription="@string/app_name"
-        android:foregroundTint="#03A9F4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/ic_menu_revert" />
 
     <TextView
         android:id="@+id/lampOnOff"

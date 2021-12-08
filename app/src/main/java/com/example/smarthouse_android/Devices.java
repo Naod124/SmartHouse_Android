@@ -1,5 +1,6 @@
 package com.example.smarthouse_android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -18,14 +19,23 @@ import android.widget.Toast;
 import com.example.smarthouse_android.Model.DeviceModel;
 import com.example.smarthouse_android.Network.APIService;
 import com.example.smarthouse_android.Network.RetrofitInstance;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +47,9 @@ public class Devices extends AppCompatActivity {
     PrintWriter printWriter;
  static int temperature;
  static int humStatus;
+String lightStatus;
+String doorStatus;
+String windowStatus;
 
  String speak;
 
@@ -45,6 +58,7 @@ public class Devices extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
+        getDeviceStatus();
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
@@ -67,7 +81,6 @@ public class Devices extends AppCompatActivity {
                 displaySpeechRecognizer();
             }
         });
-        getDeviceStatus();
         final Handler handler = new Handler();
         final int delay = 1000; // 1000 milliseconds == 1 second
 
@@ -77,6 +90,97 @@ public class Devices extends AppCompatActivity {
               handler.postDelayed(this, delay);
             }
         }, delay);
+
+        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("Devices");
+        DatabaseReference ref2 = ref1.child("State");
+        DatabaseReference lightRef = ref2.child("LightSwitch");
+        DatabaseReference windowRef = ref2.child("WindowSwitch");
+        DatabaseReference doorRef = ref2.child("DoorSwitch");
+
+        lightRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lightStatus = snapshot.getValue(String.class);
+                if (lightStatus != null && lightStatus.equalsIgnoreCase("LIGHT")){
+                    lampSwitch.setChecked(true);
+                }
+                else {
+                    assert lightStatus != null;
+                    if(lightStatus.equalsIgnoreCase("DARK")){
+                        lampSwitch.setChecked(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        windowRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                windowStatus = snapshot.getValue(String.class);
+                if(windowStatus != null && windowStatus.equalsIgnoreCase("open")){
+                    windowSwitch.setChecked(true);
+                }
+                else {
+                    assert windowStatus != null;
+                    if(windowStatus.equalsIgnoreCase("shut")){
+                        windowSwitch.setChecked(false);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        doorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                doorStatus =snapshot.getValue(String.class);
+                if (doorStatus != null) {
+                    if(doorStatus.equalsIgnoreCase("OPEN")){
+                        doorSwitch.setChecked(true);
+                    }
+                    else if(doorStatus.equalsIgnoreCase("CLOSED")){
+                        doorSwitch.setChecked(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+ /*       if (lightStatus.equalsIgnoreCase("LIGHT")){
+            lampSwitch.setChecked(true);
+        }
+        else if(lightStatus.equalsIgnoreCase("DARK")){
+            lampSwitch.setChecked(false);
+        }
+        else if(doorStatus.equalsIgnoreCase("OPEN")){
+            doorSwitch.setChecked(true);
+        }
+        else if(doorStatus.equalsIgnoreCase("CLOSED")){
+            doorSwitch.setChecked(false);
+        }
+        else if(windowStatus.equalsIgnoreCase("open")){
+            windowSwitch.setChecked(true);
+        }
+        else if(windowStatus.equalsIgnoreCase("shut")){
+            windowSwitch.setChecked(true);
+
+        }
+*/
+
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -269,6 +373,7 @@ public class Devices extends AppCompatActivity {
 
 
 
+
     public void getDeviceStatus(){
         APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
         Call<DeviceModel> call = api.getDevices();
@@ -278,22 +383,23 @@ public class Devices extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void run() {
-                Response response = null;
+
                 try {
-                    response = call.execute();
+                    Response response = call.execute();
 
-                if (response.isSuccessful()) {
-                    DeviceModel deviceModel = (DeviceModel) response.body();
-                    temp.setText(String.valueOf(deviceModel.getTemperature()) +  "°C");
-                    humidity.setText(String.valueOf(deviceModel.getHumidity())+ "%");
+                    if (response.isSuccessful()) {
+                        DeviceModel deviceModel = (DeviceModel) response.body();
+                        temp.setText(String.valueOf(deviceModel.getTemperature()) +  "°C");
+                        humidity.setText(String.valueOf(deviceModel.getHumidity())+ "%");
 
-                }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
+
 
 
 
@@ -320,6 +426,7 @@ public class Devices extends AppCompatActivity {
             }
         }).start();
     }
+
 
 
 }
