@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.SmartHouse_Android">
+        android:theme="@style/Theme.Light">
         <activity android:name=".Devices"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -1,12 +1,20 @@
 package com.example.smarthouse_android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.speech.RecognizerIntent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,21 +42,32 @@ public class Devices extends AppCompatActivity {
 
     BufferedReader bufferedReader;
     PrintWriter printWriter;
+
  static int temperature;
  static int humStatus;
 
- String speak;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_Light);
+        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
+            setTheme(R.style.Theme_Dark);
+
+        }else {
+            setTheme(R.style.Theme_Light);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("Devices");
+
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch);
-
 
         TextView lamp = (TextView) findViewById(R.id.lampOnOff);
         TextView door = (TextView) findViewById(R.id.doorOnOFF);
@@ -58,14 +77,7 @@ public class Devices extends AppCompatActivity {
         ImageView lampOff = (ImageView) findViewById(R.id.lampOff);
         ImageView  doorClosed = (ImageView) findViewById(R.id.doorClosed);
         ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
-        ImageButton speechRec = findViewById(R.id.speech);
 
-        speechRec.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                displaySpeechRecognizer();
-            }
-        });
         getDeviceStatus();
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -203,6 +215,48 @@ public class Devices extends AppCompatActivity {
 
 
     }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.devicesmain,menu);
+
+        MenuItem btnn =  menu.findItem(R.id.bar_switch);
+        MenuItem  lightMode =  menu.findItem(R.id.app_switch);
+
+        btnn.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                return false;
+            }
+        });
+
+        lightMode.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.voice_say){
+
+            displaySpeechRecognizer();
+            Toast.makeText(this, "voice clicked", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private static final int SPEECH_REQUEST_CODE = 0;
 
     private void displaySpeechRecognizer() {
@@ -221,7 +275,7 @@ public class Devices extends AppCompatActivity {
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch);
-        ImageButton speechRec = findViewById(R.id.speech);
+        //ImageButton speechRec = findViewById(R.id.voice_say);
 
         if (requestCode != SPEECH_REQUEST_CODE || resultCode != RESULT_OK) {
         }

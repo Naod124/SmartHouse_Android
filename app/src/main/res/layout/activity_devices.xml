@@ -2,9 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nhji"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/background_color"
     tools:context=".Devices">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Switch
         android:id="@+id/windowSwitch"
@@ -13,10 +24,10 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.966"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.666" />
+        app:layout_constraintVertical_bias="0.803" />
 
     <ImageView
         android:id="@+id/windowClosed"
@@ -24,11 +35,11 @@
         android:layout_height="41dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.097"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.594"
-        app:srcCompat="@drawable/closedwindow" />
+        app:layout_constraintVertical_bias="0.745"
+        app:srcCompat="@drawable/mywindow" />
 
     <ImageView
         android:id="@+id/doorClosed"
@@ -36,23 +47,23 @@
         android:layout_height="41dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.097"
+        app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.487"
-        app:srcCompat="@drawable/doorclosed" />
+        app:layout_constraintVertical_bias="0.65999997"
+        app:srcCompat="@drawable/mydoor" />
 
     <TextView
         android:id="@+id/textView15"
         android:layout_width="376dp"
         android:layout_height="25dp"
+        android:layout_marginBottom="300dp"
         android:text="Windows and Doors"
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tesxtView"
-        app:layout_constraintVertical_bias="0.446" />
+        app:layout_constraintHorizontal_bias="0.439"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Switch
         android:id="@+id/doorSwitch"
@@ -62,10 +73,10 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.966"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.571" />
+        app:layout_constraintVertical_bias="0.712" />
 
     <ImageView
         android:id="@+id/lampOff"
@@ -76,32 +87,33 @@
         app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.293"
-        app:srcCompat="@drawable/lampoff" />
+        app:layout_constraintVertical_bias="0.428"
+        app:srcCompat="@drawable/bulb" />
 
     <TextView
         android:id="@+id/lighting"
         android:layout_width="376dp"
         android:layout_height="30dp"
+        android:layout_marginBottom="456dp"
         android:text="Lights"
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tesxtView"
-        app:layout_constraintVertical_bias="0.275" />
+        app:layout_constraintHorizontal_bias="0.456"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/humidityText"
         android:layout_width="47dp"
         android:layout_height="39dp"
         android:text="             "
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintVertical_bias="0.159" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -109,40 +121,24 @@
         android:layout_height="47dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
+        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.12"
+        app:layout_constraintVertical_bias="0.116"
         app:srcCompat="@drawable/ic_action_name2" />
-
-    <TextView
-        android:id="@+id/tesxtView"
-        android:layout_width="413dp"
-        android:layout_height="64dp"
-        android:background="#03A9F4"
-        android:text="Smart House"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="377dp"
         android:layout_height="31dp"
         android:text="Environment"
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tesxtView"
-        app:layout_constraintVertical_bias="0.026" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.133" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -162,12 +158,13 @@
         android:layout_height="39dp"
         android:layout_marginEnd="16dp"
         android:text="            "
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.993"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.055" />
+        app:layout_constraintVertical_bias="0.036" />
 
     <Switch
         android:id="@+id/lightSwitch"
@@ -177,66 +174,58 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintHorizontal_bias="0.966"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.401" />
-
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="67dp"
-        android:layout_height="57dp"
-        android:contentDescription="@string/app_name"
-        android:foregroundTint="#03A9F4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/ic_menu_revert" />
+        app:layout_constraintVertical_bias="0.529" />
 
     <TextView
         android:id="@+id/lampOnOff"
         android:layout_width="64dp"
         android:layout_height="25dp"
         android:text="DARK"
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toTopOf="@+id/textView15"
         app:layout_constraintEnd_toStartOf="@+id/lightSwitch"
+        app:layout_constraintHorizontal_bias="0.433"
         app:layout_constraintStart_toEndOf="@+id/lampOff"
-        app:layout_constraintTop_toBottomOf="@+id/lighting" />
+        app:layout_constraintTop_toBottomOf="@+id/lighting"
+        app:layout_constraintVertical_bias="0.688" />
 
     <TextView
         android:id="@+id/doorOnOFF"
         android:layout_width="63dp"
-        android:layout_height="20dp"
+        android:layout_height="15dp"
         android:text="CLOSED"
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toTopOf="@+id/windowOnOfff"
         app:layout_constraintEnd_toStartOf="@+id/doorSwitch"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.437"
         app:layout_constraintStart_toEndOf="@+id/doorClosed"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.208" />
+        app:layout_constraintVertical_bias="0.48000002" />
 
     <TextView
         android:id="@+id/windowOnOfff"
         android:layout_width="65dp"
         android:layout_height="22dp"
         android:text="CLOSED"
+        android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/windowSwitch"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.46"
         app:layout_constraintStart_toEndOf="@+id/windowClosed"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.27" />
+        app:layout_constraintVertical_bias="0.392" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="36dp"
         android:text="Temperature"
+        android:textColor="?attr/text_color"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -244,20 +233,12 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="24dp"
         android:text="Humidity"
+        android:textColor="?attr/text_color"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <ImageButton
-        android:id="@+id/speech"
-        android:layout_width="134dp"
-        android:layout_height="146dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/mic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
