@@ -10,6 +10,8 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,14 +27,23 @@ import android.widget.Toast;
 import com.example.smarthouse_android.Model.DeviceModel;
 import com.example.smarthouse_android.Network.APIService;
 import com.example.smarthouse_android.Network.RetrofitInstance;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +56,9 @@ public class Devices extends AppCompatActivity {
 
  static int temperature;
  static int humStatus;
+String lightStatus;
+String doorStatus;
+String windowStatus;
 
 
     @Override
@@ -59,6 +73,7 @@ public class Devices extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
+        getDeviceStatus();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,6 +94,107 @@ public class Devices extends AppCompatActivity {
         ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
 
         getDeviceStatus();
+
+        final Handler handler = new Handler();
+        final int delay = 1000; // 1000 milliseconds == 1 second
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+              getDeviceStatus();
+              handler.postDelayed(this, delay);
+            }
+        }, delay);
+
+        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("Devices");
+        DatabaseReference ref2 = ref1.child("State");
+        DatabaseReference lightRef = ref2.child("LightSwitch");
+        DatabaseReference windowRef = ref2.child("WindowSwitch");
+        DatabaseReference doorRef = ref2.child("DoorSwitch");
+
+        lightRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lightStatus = snapshot.getValue(String.class);
+                if (lightStatus != null && lightStatus.equalsIgnoreCase("LIGHT")){
+                    lampSwitch.setChecked(true);
+                }
+                else {
+                    assert lightStatus != null;
+                    if(lightStatus.equalsIgnoreCase("DARK")){
+                        lampSwitch.setChecked(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        windowRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                windowStatus = snapshot.getValue(String.class);
+                if(windowStatus != null && windowStatus.equalsIgnoreCase("open")){
+                    windowSwitch.setChecked(true);
+                }
+                else {
+                    assert windowStatus != null;
+                    if(windowStatus.equalsIgnoreCase("shut")){
+                        windowSwitch.setChecked(false);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        doorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                doorStatus =snapshot.getValue(String.class);
+                if (doorStatus != null) {
+                    if(doorStatus.equalsIgnoreCase("OPEN")){
+                        doorSwitch.setChecked(true);
+                    }
+                    else if(doorStatus.equalsIgnoreCase("CLOSED")){
+                        doorSwitch.setChecked(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+ /*       if (lightStatus.equalsIgnoreCase("LIGHT")){
+            lampSwitch.setChecked(true);
+        }
+        else if(lightStatus.equalsIgnoreCase("DARK")){
+            lampSwitch.setChecked(false);
+        }
+        else if(doorStatus.equalsIgnoreCase("OPEN")){
+            doorSwitch.setChecked(true);
+        }
+        else if(doorStatus.equalsIgnoreCase("CLOSED")){
+            doorSwitch.setChecked(false);
+        }
+        else if(windowStatus.equalsIgnoreCase("open")){
+            windowSwitch.setChecked(true);
+        }
+        else if(windowStatus.equalsIgnoreCase("shut")){
+            windowSwitch.setChecked(true);
+
+        }
+*/
+
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -304,12 +420,13 @@ public class Devices extends AppCompatActivity {
             else if(spokenText.equalsIgnoreCase("Window close")) {
                 windowSwitch.setChecked(false);
             }else{
-                Toast.makeText(Devices.this,"The say the correct commands",Toast.LENGTH_LONG).show();
+                Toast.makeText(Devices.this,"Pronounce the correct commands",Toast.LENGTH_LONG).show();
             }
 
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
 
 
@@ -322,22 +439,23 @@ public class Devices extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void run() {
-                Response response = null;
+
                 try {
-                    response = call.execute();
+                    Response response = call.execute();
 
-                if (response.isSuccessful()) {
-                    DeviceModel deviceModel = (DeviceModel) response.body();
-                    temp.setText(String.valueOf(deviceModel.getTemperature()) +  "°C");
-                    humidity.setText(String.valueOf(deviceModel.getHumidity())+ "%");
+                    if (response.isSuccessful()) {
+                        DeviceModel deviceModel = (DeviceModel) response.body();
+                        temp.setText(String.valueOf(deviceModel.getTemperature()) +  "°C");
+                        humidity.setText(String.valueOf(deviceModel.getHumidity())+ "%");
 
-                }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
+
 
 
 
@@ -364,6 +482,7 @@ public class Devices extends AppCompatActivity {
             }
         }).start();
     }
+
 
 
 }
