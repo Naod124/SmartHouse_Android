@@ -24,10 +24,10 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintHorizontal_bias="0.947"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.803" />
+        app:layout_constraintVertical_bias="0.752" />
 
     <ImageView
         android:id="@+id/windowClosed"
@@ -35,10 +35,10 @@
         android:layout_height="41dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintHorizontal_bias="0.091"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.745"
+        app:layout_constraintVertical_bias="0.701"
         app:srcCompat="@drawable/mywindow" />
 
     <ImageView
@@ -47,10 +47,10 @@
         android:layout_height="41dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.091"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.65999997"
+        app:layout_constraintVertical_bias="0.598"
         app:srcCompat="@drawable/mydoor" />
 
     <TextView
@@ -73,10 +73,10 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.712" />
+        app:layout_constraintVertical_bias="0.667" />
 
     <ImageView
         android:id="@+id/lampOff"
@@ -87,7 +87,7 @@
         app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.428"
+        app:layout_constraintVertical_bias="0.293"
         app:srcCompat="@drawable/bulb" />
 
     <TextView
@@ -174,10 +174,10 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.401" />
+        app:layout_constraintVertical_bias="0.424" />
 
     <TextView
         android:id="@+id/lampOnOff"
@@ -187,10 +187,10 @@
         android:textColor="?attr/text_color"
         app:layout_constraintBottom_toTopOf="@+id/textView15"
         app:layout_constraintEnd_toStartOf="@+id/lightSwitch"
-        app:layout_constraintHorizontal_bias="0.433"
+        app:layout_constraintHorizontal_bias="0.41"
         app:layout_constraintStart_toEndOf="@+id/lampOff"
         app:layout_constraintTop_toBottomOf="@+id/lighting"
-        app:layout_constraintVertical_bias="0.688" />
+        app:layout_constraintVertical_bias="0.132" />
 
     <TextView
         android:id="@+id/doorOnOFF"
@@ -213,10 +213,10 @@
         android:textColor="?attr/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/windowSwitch"
-        app:layout_constraintHorizontal_bias="0.46"
+        app:layout_constraintHorizontal_bias="0.458"
         app:layout_constraintStart_toEndOf="@+id/windowClosed"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.392" />
+        app:layout_constraintVertical_bias="0.323" />
 
     <TextView
         android:id="@+id/textView"
@@ -239,5 +239,52 @@
         android:textColor="?attr/text_color"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="72dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="308dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/windowSwitch"
+        app:srcCompat="@drawable/alarmoff" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/setting"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        app:backgroundTint="#00BCD4"
+        app:icon="@drawable/settingdevice"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:contentDescription="TODO"
+        app:backgroundTint="#00BCD4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete"
+        app:srcCompat="@drawable/adddevice" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:contentDescription="TODO"
+        app:backgroundTint="#00BCD4"
+        app:fabSize="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/windowSwitch"
+        app:srcCompat="@drawable/editdevice" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,8 @@ import android.widget.Toast;
 import com.example.smarthouse_android.Model.DeviceModel;
 import com.example.smarthouse_android.Network.APIService;
 import com.example.smarthouse_android.Network.RetrofitInstance;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -79,6 +81,16 @@ String windowStatus;
         setSupportActionBar(toolbar);
         setTitle("Devices");
 
+        FloatingActionButton add, edit;
+        ExtendedFloatingActionButton setting;
+
+        final Boolean[] isAllFabsVisible = new Boolean[1];
+
+        add = findViewById(R.id.addDevice);
+        setting = findViewById(R.id.setting);
+        edit = findViewById(R.id.delete);
+
+
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
@@ -94,6 +106,75 @@ String windowStatus;
         ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
 
         getDeviceStatus();
+
+        add.setVisibility(View.GONE);
+        edit.setVisibility(View.GONE);
+        isAllFabsVisible[0] = false;
+        // Set the Extended floating action button to
+        // shrinked state initially
+        setting.shrink();
+        // We will make all the FABs and action name texts
+        // visible only when Parent FAB button is clicked So
+        // we have to handle the Parent FAB button first, by
+        // using setOnClickListener you can see below
+        setting.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!isAllFabsVisible[0]) {
+                            // when isAllFabsVisible becomes
+                            // true make all the action name
+                            // texts and FABs VISIBLE.
+                            add.show();
+                            edit.show();
+
+                            // Now extend the parent FAB, as
+                            // user clicks on the shrinked
+                            // parent FAB
+                            setting.extend();
+                            // make the boolean variable true as
+                            // we have set the sub FABs
+                            // visibility to GONE
+                            isAllFabsVisible[0] = true;
+                        } else {
+                            // when isAllFabsVisible becomes
+                            // true make all the action name
+                            // texts and FABs GONE.
+                            add.hide();
+                            edit.hide();
+
+                            // Set the FAB to shrink after user
+                            // closes all the sub FABs
+                            setting.shrink();
+                            // make the boolean variable false
+                            // as we have set the sub FABs
+                            // visibility to GONE
+                            isAllFabsVisible[0] = false;
+                        }
+                    }
+                });
+        // below is the sample action to handle add person
+        // FAB. Here it shows simple Toast msg. The Toast
+        // will be shown only when they are visible and only
+        // when user clicks on them
+        edit.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(Devices.this, EditDevice.class));
+                    }
+                });
+        // below is the sample action to handle add alarm
+        // FAB. Here it shows simple Toast msg The Toast
+        // will be shown only when they are visible and only
+        // when user clicks on them
+        add.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(Devices.this, AddDevice.class));
+                    }
+                });
 
         final Handler handler = new Handler();
         final int delay = 1000; // 1000 milliseconds == 1 second
