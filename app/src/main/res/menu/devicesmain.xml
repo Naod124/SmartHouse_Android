@@ -19,6 +19,11 @@
         android:title="Switch"
         app:showAsAction="always"
         android:icon="@drawable/moon"/>
+    <item
+        android:id="@+id/shutoff"
+        android:title="Switch"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_baseline_power_settings_new_24"/>
 
 
 </menu>

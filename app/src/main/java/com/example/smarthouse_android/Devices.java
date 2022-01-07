@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 
 import android.os.Handler;
@@ -25,6 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.smarthouse_android.Model.DeviceModel;
+import com.example.smarthouse_android.Model.Door;
+import com.example.smarthouse_android.Model.Light;
+import com.example.smarthouse_android.Model.TempHumi;
+import com.example.smarthouse_android.Model.Window;
 import com.example.smarthouse_android.Network.APIService;
 import com.example.smarthouse_android.Network.RetrofitInstance;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -37,16 +42,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,13 +61,14 @@ public class Devices extends AppCompatActivity {
 
  static int temperature;
  static int humStatus;
-String lightStatus;
-String doorStatus;
-String windowStatus;
+Light[] lightStatus;
+Door[] doorStatus;
+Window[] windowStatus;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         setTheme(R.style.Theme_Light);
         if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
             setTheme(R.style.Theme_Dark);
@@ -75,6 +79,10 @@ String windowStatus;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         getDeviceStatus();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -86,95 +94,47 @@ String windowStatus;
 
         final Boolean[] isAllFabsVisible = new Boolean[1];
 
-        add = findViewById(R.id.addDevice);
-        setting = findViewById(R.id.setting);
-        edit = findViewById(R.id.delete);
 
 
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch1 = findViewById(R.id.lightSwitch2);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch);
 
         TextView lamp = (TextView) findViewById(R.id.lampOnOff);
+        TextView lamp1 = (TextView) findViewById(R.id.lampOnOff);
         TextView door = (TextView) findViewById(R.id.doorOnOFF);
         TextView humidity = (TextView) findViewById(R.id.humidityText);
         TextView  temp = (TextView) findViewById(R.id.tempText);
         TextView window = (TextView) findViewById(R.id.windowOnOfff);
         ImageView lampOff = (ImageView) findViewById(R.id.lampOff);
+        ImageView lampOff1 = (ImageView) findViewById(R.id.lampOff2);
         ImageView  doorClosed = (ImageView) findViewById(R.id.doorClosed);
         ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
+        Button alarmButton = (Button) findViewById(R.id.fireOff);
+        //ImageButton poweroff = (ImageButton) findViewById(R.id.powerOff);
+
+        //alarmButton.setBackground(null);
+        //poweroff.setBackground(null);
+
+        ImageButton imageButton = new ImageButton(this);
+        imageButton.setBackground(null);
 
         getDeviceStatus();
 
-        add.setVisibility(View.GONE);
-        edit.setVisibility(View.GONE);
-        isAllFabsVisible[0] = false;
-        // Set the Extended floating action button to
-        // shrinked state initially
-        setting.shrink();
-        // We will make all the FABs and action name texts
-        // visible only when Parent FAB button is clicked So
-        // we have to handle the Parent FAB button first, by
-        // using setOnClickListener you can see below
-        setting.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!isAllFabsVisible[0]) {
-                            // when isAllFabsVisible becomes
-                            // true make all the action name
-                            // texts and FABs VISIBLE.
-                            add.show();
-                            edit.show();
+        File lightFile1 = new File("statusLight1.txt");
+        File lightFile2 = new File("statusLight2.txt");
+        File doorFile = new File("statusDoor.txt");
+        File windowFile = new File("statusWindow.txt");
 
-                            // Now extend the parent FAB, as
-                            // user clicks on the shrinked
-                            // parent FAB
-                            setting.extend();
-                            // make the boolean variable true as
-                            // we have set the sub FABs
-                            // visibility to GONE
-                            isAllFabsVisible[0] = true;
-                        } else {
-                            // when isAllFabsVisible becomes
-                            // true make all the action name
-                            // texts and FABs GONE.
-                            add.hide();
-                            edit.hide();
+        String oldContent = "";
 
-                            // Set the FAB to shrink after user
-                            // closes all the sub FABs
-                            setting.shrink();
-                            // make the boolean variable false
-                            // as we have set the sub FABs
-                            // visibility to GONE
-                            isAllFabsVisible[0] = false;
-                        }
-                    }
-                });
-        // below is the sample action to handle add person
-        // FAB. Here it shows simple Toast msg. The Toast
-        // will be shown only when they are visible and only
-        // when user clicks on them
-        edit.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(Devices.this, EditDevice.class));
-                    }
-                });
-        // below is the sample action to handle add alarm
-        // FAB. Here it shows simple Toast msg The Toast
-        // will be shown only when they are visible and only
-        // when user clicks on them
-        add.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(Devices.this, AddDevice.class));
-                    }
-                });
+        BufferedReader reader = null;
+
+        final FileWriter[] writer = {null};
+
+
 
         final Handler handler = new Handler();
         final int delay = 1000; // 1000 milliseconds == 1 second
@@ -186,103 +146,34 @@ String windowStatus;
             }
         }, delay);
 
-        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("Devices");
-        DatabaseReference ref2 = ref1.child("State");
-        DatabaseReference lightRef = ref2.child("LightSwitch");
-        DatabaseReference windowRef = ref2.child("WindowSwitch");
-        DatabaseReference doorRef = ref2.child("DoorSwitch");
 
-        lightRef.addValueEventListener(new ValueEventListener() {
+        alarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                lightStatus = snapshot.getValue(String.class);
-                if (lightStatus != null && lightStatus.equalsIgnoreCase("LIGHT")){
-                    lampSwitch.setChecked(true);
-                }
-                else {
-                    assert lightStatus != null;
-                    if(lightStatus.equalsIgnoreCase("DARK")){
-                        lampSwitch.setChecked(false);
+            public void onClick(View v) {
+                APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                Call<DeviceModel> call = api.update("lights","3","false");
+
+                call.enqueue(new Callback<DeviceModel>() {
+                    @Override
+                    public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                        System.out.println("************************LightSwitch" + response.code() + "**********************");
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                    }
+                });
 
             }
         });
-
-        windowRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                windowStatus = snapshot.getValue(String.class);
-                if(windowStatus != null && windowStatus.equalsIgnoreCase("open")){
-                    windowSwitch.setChecked(true);
-                }
-                else {
-                    assert windowStatus != null;
-                    if(windowStatus.equalsIgnoreCase("shut")){
-                        windowSwitch.setChecked(false);
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        doorRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                doorStatus =snapshot.getValue(String.class);
-                if (doorStatus != null) {
-                    if(doorStatus.equalsIgnoreCase("OPEN")){
-                        doorSwitch.setChecked(true);
-                    }
-                    else if(doorStatus.equalsIgnoreCase("CLOSED")){
-                        doorSwitch.setChecked(false);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
- /*       if (lightStatus.equalsIgnoreCase("LIGHT")){
-            lampSwitch.setChecked(true);
-        }
-        else if(lightStatus.equalsIgnoreCase("DARK")){
-            lampSwitch.setChecked(false);
-        }
-        else if(doorStatus.equalsIgnoreCase("OPEN")){
-            doorSwitch.setChecked(true);
-        }
-        else if(doorStatus.equalsIgnoreCase("CLOSED")){
-            doorSwitch.setChecked(false);
-        }
-        else if(windowStatus.equalsIgnoreCase("open")){
-            windowSwitch.setChecked(true);
-        }
-        else if(windowStatus.equalsIgnoreCase("shut")){
-            windowSwitch.setChecked(true);
-
-        }
-*/
-
 
         lampSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (lampSwitch.isChecked()) {
                     APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
-                    Call<DeviceModel> call = api.update("LightSwitch","LIGHT");
+                    Call<DeviceModel> call = api.update("lights","1","true");
 
                     call.enqueue(new Callback<DeviceModel>() {
                         @Override
@@ -299,9 +190,20 @@ String windowStatus;
                     lamp.setText("LIGHT");
                     sendMessage( lamp.getText().toString());
                     lampOff.setImageResource(R.drawable.lighton);
+                    String newContent = oldContent.replaceAll("0", "1");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(lightFile1);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 } else {
                     APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
-                    Call<DeviceModel> call = api.update("LightSwitch","DARK");
+                    Call<DeviceModel> call = api.update("lights","1","false");
 
                     call.enqueue(new Callback<DeviceModel>() {
                         @Override
@@ -318,6 +220,81 @@ String windowStatus;
                     lamp.setText("DARK");
                     sendMessage(lamp.getText().toString());
                     lampOff.setImageResource(R.drawable.lightoff);
+                    String newContent = oldContent.replaceAll("1", "0");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(lightFile1);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        lampSwitch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (lampSwitch.isChecked()) {
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("lights","2","true");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************LightSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
+
+                    lamp1.setText("LIGHT");
+                    sendMessage( lamp.getText().toString());
+                    lampOff1.setImageResource(R.drawable.lighton);
+                    String newContent = oldContent.replaceAll("0", "1");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(lightFile2);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+                    Call<DeviceModel> call = api.update("lights","2","false");
+
+                    call.enqueue(new Callback<DeviceModel>() {
+                        @Override
+                        public void onResponse(Call<DeviceModel> call, Response<DeviceModel> response) {
+                            System.out.println("************************LightSwitch" + response.code() + "**********************");
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceModel> call, Throwable t) {
+
+                        }
+                    });
+
+                    lamp1.setText("DARK");
+                    sendMessage(lamp.getText().toString());
+                    lampOff1.setImageResource(R.drawable.lightoff);
+                    String newContent = oldContent.replaceAll("1", "0");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(lightFile2);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -327,7 +304,7 @@ String windowStatus;
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (doorSwitch.isChecked()) {
                     APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
-                    Call<DeviceModel> call = api.update("DoorSwitch","OPEN");
+                    Call<DeviceModel> call = api.update("doors","1","true");
 
                     call.enqueue(new Callback<DeviceModel>() {
                         @Override
@@ -343,9 +320,19 @@ String windowStatus;
                     door.setText("OPEN");
                     sendMessage(door.getText().toString());
                     doorClosed.setImageResource(R.drawable.opendoor);
+                    String newContent = oldContent.replaceAll("0", "1");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(doorFile);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }else {
                     APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
-                    Call<DeviceModel> call = api.update("DoorSwitch","CLOSED");
+                    Call<DeviceModel> call = api.update("doors","1","false");
 
                     call.enqueue(new Callback<DeviceModel>() {
                         @Override
@@ -361,6 +348,16 @@ String windowStatus;
                     door.setText("CLOSED");
                     sendMessage(door.getText().toString());
                     doorClosed.setImageResource(R.drawable.doorclosed);
+                    String newContent = oldContent.replaceAll("1", "0");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(doorFile);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -370,7 +367,7 @@ String windowStatus;
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (windowSwitch.isChecked()){
                     APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
-                    Call<DeviceModel> call = api.update("WindowSwitch","open");
+                    Call<DeviceModel> call = api.update("windows","1","true");
 
                     call.enqueue(new Callback<DeviceModel>() {
                         @Override
@@ -386,10 +383,20 @@ String windowStatus;
                     window.setText("OPEN");
                     sendMessage("open");
                     windowClosed.setImageResource(R.drawable.openwindow);
+                    String newContent = oldContent.replaceAll("0", "1");
+
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(windowFile);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else{
                     APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
-                    Call<DeviceModel> call = api.update("WindowSwitch","shut");
+                    Call<DeviceModel> call = api.update("windows","1","false");
 
                     call.enqueue(new Callback<DeviceModel>() {
                         @Override
@@ -405,7 +412,16 @@ String windowStatus;
                     window.setText("CLOSED");
                     sendMessage("shut");
                     windowClosed.setImageResource(R.drawable.closedwindow);
+                    String newContent = oldContent.replaceAll("1", "0");
 
+                    //Rewriting the input text file with newContent
+
+                    try {
+                        writer[0] = new FileWriter(windowFile);
+                        writer[0].write(newContent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -420,6 +436,7 @@ String windowStatus;
 
         MenuItem btnn =  menu.findItem(R.id.bar_switch);
         MenuItem  lightMode =  menu.findItem(R.id.app_switch);
+        MenuItem  power =  menu.findItem(R.id.shutoff);
 
         btnn.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -437,6 +454,16 @@ String windowStatus;
                 return false;
             }
         });
+
+        power.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                startActivity(new Intent(Devices.this,MainActivity.class));
+
+                return false;
+            }
+        });
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -513,10 +540,53 @@ String windowStatus;
 
     public void getDeviceStatus(){
         APIService api = RetrofitInstance.getRetrofitInstance().create(APIService.class);
+        Call<DeviceModel> call2 = api.getDevice("humidity");
+        Call<DeviceModel> call1 = api.getDevice("temperature");
         Call<DeviceModel> call = api.getDevices();
+        /*Call getHumi = api.getHumi();
+        Call getTemp = api.getTemp();
+
+         */
         TextView humidity = (TextView) findViewById(R.id.humidityText);
         TextView  temp = (TextView) findViewById(R.id.tempText);
-        new Thread(new Runnable() {
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch  lampSwitch = findViewById(R.id.lightSwitch);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch   doorSwitch = findViewById(R.id.doorSwitch);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch    windowSwitch = findViewById(R.id.windowSwitch);
+        TextView window = (TextView) findViewById(R.id.windowOnOfff);
+        ImageView lampOff = (ImageView) findViewById(R.id.lampOff);
+        ImageView  doorClosed = (ImageView) findViewById(R.id.doorClosed);
+        ImageView   windowClosed = (ImageView) findViewById(R.id.windowClosed);
+        TextView lamp = (TextView) findViewById(R.id.lampOnOff);
+        TextView door = (TextView) findViewById(R.id.doorOnOFF);
+
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                   // Response response = call.execute();
+                    Response response = call.execute();
+
+                   // Response response1 = getTemp.execute();
+                    if (response.isSuccessful()  ) {
+                        DeviceModel deviceModel = (DeviceModel) response.body();
+                        //DeviceModel deviceModel1 = (DeviceModel) response1.body();
+                        temp.setText((deviceModel.getTemperature()) +  "°C");
+                        humidity.setText((deviceModel.getHumidity())+ "%");
+                        doorStatus = deviceModel.getDoorSwitch();
+                        windowStatus = deviceModel.getWindowSwitch();
+                        lightStatus = deviceModel.getLightSwitch();
+
+
+
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+       /* new Thread(new Runnable() {
             @SuppressLint("SetTextI18n")
             @Override
             public void run() {
@@ -528,6 +598,21 @@ String windowStatus;
                         DeviceModel deviceModel = (DeviceModel) response.body();
                         temp.setText(String.valueOf(deviceModel.getTemperature()) +  "°C");
                         humidity.setText(String.valueOf(deviceModel.getHumidity())+ "%");
+                        doorStatus = deviceModel.getDoorSwitch();
+                        windowStatus = deviceModel.getWindowSwitch();
+                        lightStatus = deviceModel.getLightSwitch();
+
+                        if (doorStatus.equalsIgnoreCase("OPEN")){
+                            doorSwitch.setChecked(true);
+                        }
+                        if (windowStatus.equalsIgnoreCase("open")){
+                            windowSwitch.setChecked(true);
+                        }
+                        if (lightStatus.equalsIgnoreCase("LIGHT")){
+                            lampSwitch.setChecked(true);
+                        }
+
+
 
                     }
                 } catch (IOException e) {
@@ -535,6 +620,8 @@ String windowStatus;
                 }
             }
         }).start();
+
+        */
     }
 
 
@@ -564,6 +651,96 @@ String windowStatus;
         }).start();
     }
 
+     /*   DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("Devices");
+        DatabaseReference ref2 = ref1.child("State");
+        DatabaseReference lightRef = ref2.child("LightSwitch");
+        DatabaseReference windowRef = ref2.child("WindowSwitch");
+        DatabaseReference doorRef = ref2.child("DoorSwitch");
+
+        lightRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lightStatus = snapshot.getValue(String.class);
+                if (lightStatus != null && lightStatus.equalsIgnoreCase("LIGHT")){
+                    lampSwitch.setChecked(true);
+                }
+                else {
+                    assert lightStatus != null;
+                    if(lightStatus.equalsIgnoreCase("DARK")){
+                        lampSwitch.setChecked(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        windowRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                windowStatus = snapshot.getValue(String.class);
+                if(windowStatus != null && windowStatus.equalsIgnoreCase("open")){
+                    windowSwitch.setChecked(true);
+                }
+                else {
+                    assert windowStatus != null;
+                    if(windowStatus.equalsIgnoreCase("shut")){
+                        windowSwitch.setChecked(false);
+
+                    }
+                }
+            }
 
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        doorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                doorStatus =snapshot.getValue(String.class);
+                if (doorStatus != null) {
+                    if(doorStatus.equalsIgnoreCase("OPEN")){
+                        doorSwitch.setChecked(true);
+                    }
+                    else if(doorStatus.equalsIgnoreCase("CLOSED")){
+                        doorSwitch.setChecked(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+      */
+
+ /*       if (lightStatus.equalsIgnoreCase("LIGHT")){
+            lampSwitch.setChecked(true);
+        }
+        else if(lightStatus.equalsIgnoreCase("DARK")){
+            lampSwitch.setChecked(false);
+        }
+        else if(doorStatus.equalsIgnoreCase("OPEN")){
+            doorSwitch.setChecked(true);
+        }
+        else if(doorStatus.equalsIgnoreCase("CLOSED")){
+            doorSwitch.setChecked(false);
+        }
+        else if(windowStatus.equalsIgnoreCase("open")){
+            windowSwitch.setChecked(true);
+        }
+        else if(windowStatus.equalsIgnoreCase("shut")){
+            windowSwitch.setChecked(true);
+
+        }
+*/
 }

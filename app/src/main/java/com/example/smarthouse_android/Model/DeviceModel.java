@@ -7,64 +7,68 @@ import java.io.Serializable;
 
 public class DeviceModel implements Serializable {
 
-    @SerializedName("LightSwitch")
+    @SerializedName("lights")
     @Expose
-    private String LightSwitch;
+    private Light[] LightSwitch;
 
-    @SerializedName("DoorSwitch")
+    @SerializedName("doors")
     @Expose
-    private String DoorSwitch;
+    private Door[] DoorSwitch;
 
-    @SerializedName("Humidity")
+    @SerializedName("humidity")
     @Expose
-    private int Humidity;
+    private int humidity;
 
-    @SerializedName("Temperature")
+    @SerializedName("temperature")
     @Expose
-    private int Temperature;
+    private int temperature;
 
-    @SerializedName("WindowSwitch")
+    @SerializedName("windows")
     @Expose
-    private String WindowSwitch;
+    private Window[] WindowSwitch;
 
 
-    public String getLightSwitch() {
-        return LightSwitch;
-    }
 
-    public void setLightSwitch(String lightSwitch) {
-        LightSwitch = lightSwitch;
-    }
 
-    public String getDoorSwitch() {
-        return DoorSwitch;
-    }
-
-    public void setDoorSwitch(String doorSwitch) {
-        DoorSwitch = doorSwitch;
-    }
 
     public int getHumidity() {
-        return Humidity;
+        return humidity;
     }
 
     public void setHumidity(int humidity) {
-        Humidity = humidity;
+        this.humidity = humidity;
     }
 
     public int getTemperature() {
-        return Temperature;
+        return temperature;
     }
 
     public void setTemperature(int temperature) {
-        Temperature = temperature;
+        this.temperature = temperature;
     }
 
-    public String getWindowSwitch() {
+
+    public Light[] getLightSwitch() {
+        return LightSwitch;
+    }
+
+    public void setLightSwitch(Light[] lightSwitch) {
+        LightSwitch = lightSwitch;
+    }
+
+    public Door[] getDoorSwitch() {
+        return DoorSwitch;
+    }
+
+    public void setDoorSwitch(Door[] doorSwitch) {
+        DoorSwitch = doorSwitch;
+    }
+
+    public Window[] getWindowSwitch() {
         return WindowSwitch;
     }
 
-    public void setWindowSwitch(String windowSwitch) {
+    public void setWindowSwitch(Window[] windowSwitch) {
         WindowSwitch = windowSwitch;
     }
 }
