@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background= "?attr/background_color">
+
+    <item android:title="voice"
+        android:id="@+id/voice_say"
+        app:showAsAction="always"
+        android:icon="@drawable/hear"/>
+    <item
+        android:id="@+id/app_switch"
+        android:checkable="false"
+        android:checked="false"
+        android:icon="@drawable/mode"
+        android:title="Switch"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/bar_switch"
+        android:title="Switch"
+        app:showAsAction="always"
+        android:icon="@drawable/moon"/>
+    <item
+        android:id="@+id/shutoff"
+        android:title="Switch"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_baseline_power_settings_new_24"/>
+
+
+</menu>
